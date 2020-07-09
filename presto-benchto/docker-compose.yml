@@ -10,7 +10,10 @@ services:
     ports:
       - 5432:5432
     volumes:
+      - ./conf/pg-init.sql:/docker-entrypoint-initdb.d/pg-init.sql
       - /tmp/pg-data:/var/lib/postgresql/data
+#    logging:
+#      driver: none
 
   minio:
     image: minio/minio:RELEASE.2020-06-22T03-12-50Z
@@ -21,13 +24,12 @@ services:
       - MINIO_SECRET_KEY
     ports:
       - 9000:9000
+    logging:
+      driver: none
 
   metastore:
     image: shivarajugowda/hivemetastore:3.0.0
     environment:
-      - INIT_SCHEMA
-      - HIVE_METASTORE_PORT
-      - HIVE_METASTORE_URI
       - HIVE_METASTORE_JDBC_URL
       - HIVE_METASTORE_DRIVER
       - HIVE_METASTORE_USER
@@ -36,6 +38,8 @@ services:
       - S3_ACCESS_KEY
       - S3_SECRET_KEY
       - S3_HIVE_WAREHOUSE_DIR
+    logging:
+      driver: none
 
   presto:
     image: prestosql/presto:337
@@ -46,3 +50,15 @@ services:
       - 8080:8080
     logging:
       driver: none
+
+  benchto-service:
+    image: shivarajugowda/benchto-service
+    depends_on:
+      - postgres
+    environment:
+      - SPRING_DATASOURCE_URL
+      - SPRING_DATASOURCE_USERNAME
+      - SPRING_DATASOURCE_PASSWORD
+      - FLYWAY_BASELINE_ON_MIGRATE
+    ports:
+      - 8081:8080

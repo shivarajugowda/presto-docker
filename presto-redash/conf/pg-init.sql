@@ -1,0 +1,2 @@
+CREATE DATABASE redash;
+CREATE DATABASE benchmarks;

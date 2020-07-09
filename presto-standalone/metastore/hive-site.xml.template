@@ -1,5 +1,9 @@
 <configuration>
     <property>
+      <name>metastore.thrift.uris</name>
+      <value>%HIVE_METASTORE_URI%</value>
+    </property>
+    <property>
         <name>metastore.task.threads.always</name>
         <value>org.apache.hadoop.hive.metastore.events.EventCleanerTask,org.apache.hadoop.hive.metastore.MaterializationsCacheCleanerTask</value>
     </property>
@@ -28,7 +32,7 @@
 
     <!-- S3 -->
     <property>
-        <name>fs.defaultFS</name>
+        <name>hive.metastore.warehouse.dir</name>
         <value>%S3_HIVE_WAREHOUSE_DIR%</value>
     </property>
     <property>

@@ -1,0 +1,26 @@
+benchmark-service:
+  url: http://localhost:8081
+
+data-sources:
+  presto:
+    url: jdbc:presto://localhost:8080
+    username: admin
+    password:
+    driver-class-name: io.prestosql.jdbc.PrestoDriver
+
+environment:
+  name: PRESTO-DEVENV
+
+presto:
+  url: http://localhost:8080
+  username: admin
+  password:
+
+benchmark:
+  feature:
+    presto:
+      metrics.collection.enabled: false
+
+macros:
+  sleep-4s:
+    command: echo "Sleeping for 4s" && sleep 1

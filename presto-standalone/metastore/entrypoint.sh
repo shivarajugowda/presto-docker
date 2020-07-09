@@ -9,7 +9,11 @@ export JAVA_HOME=/usr/local/openjdk-8
 
 export HADOOP_CLASSPATH=${HADOOP_HOME}/share/hadoop/tools/lib/aws-java-sdk-bundle-1.11.375.jar:${HADOOP_HOME}/share/hadoop/tools/lib/hadoop-aws-3.2.0.jar
 
+export INIT_SCHEMA=${INIT_SCHEMA:-false}
+export HIVE_METASTORE_PORT=${HIVE_METASTORE_PORT:-8080}
+
 sed \
+  -e "s|%HIVE_METASTORE_URI%|${HIVE_METASTORE_URI}|g" \
   -e "s|%HIVE_METASTORE_JDBC_URL%|${HIVE_METASTORE_JDBC_URL}|g" \
   -e "s|%HIVE_METASTORE_DRIVER%|${HIVE_METASTORE_DRIVER}|g" \
   -e "s|%HIVE_METASTORE_USER%|${HIVE_METASTORE_USER}|g" \
@@ -20,5 +24,8 @@ sed \
   -e "s|%S3_HIVE_WAREHOUSE_DIR%|${S3_HIVE_WAREHOUSE_DIR:-}|g" \
   ${HIVE_HOME}/conf/hive-site.xml.template > ${HIVE_HOME}/conf/hive-site.xml
 
-/opt/apache-hive-metastore-3.0.0-bin/bin/schematool -initSchema -dbType postgres
-/opt/apache-hive-metastore-3.0.0-bin/bin/start-metastore
+if [ "$INIT_SCHEMA" = true ] ; then
+  /opt/apache-hive-metastore-3.0.0-bin/bin/schematool -initSchema -dbType postgres
+fi
+
+/opt/apache-hive-metastore-3.0.0-bin/bin/start-metastore -p $HIVE_METASTORE_PORT
